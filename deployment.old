@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: artemis
+  labels:
+    app: artemis
+spec:
+  ports:
+  - port: 6161
+    name: service
+    protocol: UDP
+  - port: 8161
+    name: console
+    protocol: UDP
+  - port: 9876
+    name: broadcast
+    protocol: UDP
+  - port: 61610
+    name: netty-connector
+    protocol: TCP
+  - port: 5672
+    name: acceptor-amqp
+    protocol: TCP
+  - port: 61613
+    name: acceptor-stomp
+    protocol: TCP
+  - port: 5445
+    name: accep-hornetq
+    protocol: TCP
+  - port: 1883
+    name: acceptor-mqt
+    protocol: TCP
+  - port: 10000
+    protocol: UDP
+    name: veloe-broadcast // this name is invalid but i wanted to match it to my broker.xml
+  clusterIP: None
+  selector:
+    app: artemis01
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: artemis01headless
+  namespace: artemis
+spec:
+  selector:
+    matchLabels:
+      app: artemis01 
+  serviceName: artemis01
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: artemis01 
+    spec:
+      affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - worker
+      containers:
+        - env:
+          - name: ARTEMIS_PASSWORD
+            value: admin
+          - name: ARTEMIS_USER
+            value: admin
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          name: artemis
+          image: 
+          ports:
+          - containerPort: 6161
+            name: service
+            protocol: UDP
+          - containerPort: 8161
+            name: console
+            protocol: UDP
+          - containerPort: 9876
+            name: broadcast
+            protocol: UDP
+          - containerPort: 61610
+            name: netty-connector
+            protocol: TCP
+          - containerPort: 5672
+            name: acceptor-amqp
+            protocol: TCP
+          - containerPort: 61613
+            name: acceptor-stomp
+            protocol: TCP
+          - containerPort: 5445
+            name: accep-hornetq
+            protocol: TCP
+          - containerPort: 1883
+            name: acceptor-mqtt
+            protocol: TCP
+          - containerPort: 10000
+            name: veloe-broadcast
+            protocol: UDP

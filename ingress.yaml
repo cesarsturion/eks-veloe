@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: api-ingress-test
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+#  - host: a339291cd1de14064a5144a840b48e21-97671f3b118eb4f8.elb.us-east-1.amazonaws.com
+   - http:
+      paths:
+      - backend:
+          serviceName: amq
+          servicePort: 8161
+        path: /
