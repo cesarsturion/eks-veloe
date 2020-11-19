@@ -12,10 +12,10 @@ RUN apache-artemis-2.16.0/bin/artemis create veloe-broker \
     --clustered \ 
     --host '${ipv4addr:localhost}' \
     --cluster-user veloe-cluster \
-    --cluster-password admin \
-    --relax-jolokia
+    --cluster-password admin 
+    #\ --relax-jolokia
 COPY bootstrap.xml veloe-broker/etc     
-#COPY jolokia-access.xml veloe-broker/etc
+COPY jolokia-access.xml veloe-broker/etc
 COPY broker.xml veloe-broker/etc
 COPY test-jgroups-file_ping.xml veloe-broker/etc
 COPY start.sh .

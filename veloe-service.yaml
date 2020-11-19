@@ -37,13 +37,5 @@ spec:
       port: 5672
       protocol: TCP
       targetPort: 5672
-    - name: veloe
-      port: 9876
-      protocol: UDP
-      targetPort: 9876
-    - name: veloe2
-      port: 10000
-      protocol: UDP
-      targetPort: 10000
   sessionAffinity: None
-  type: ClusterIP
+  type: LoadBalancer
